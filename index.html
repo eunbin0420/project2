@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>맞춤형 학과 추천 시스템</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 25px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result-box {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #eef7ee;
+            border-left: 5px solid #4CAF50;
+            display: none;
+        }
+        .result-title {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🎓 내 맞춤 학과 찾기</h1>
+    
+    <!-- 관심사 선택 -->
+    <div class="form-group">
+        <label for="interest">1. 가장 관심 있는 분야는 무엇인가요?</label>
+        <select id="interest">
+            <option value="">-- 선택하세요 --</option>
+            <option value="tech">컴퓨터 / IT / 로봇</option>
+            <option value="science">과학 / 실험 / 의학</option>
+            <option value="art">미술 / 음악 / 영상제작</option>
+            <option value="social">사람 / 심리 / 사회문제</option>
+            <option value="business">경영 / 경제 / 창업</option>
+        </select>
+    </div>
+
+    <!-- 성적 입력 (중학생 수준에 맞춰 상/중/하로 단순화) -->
+    <div class="form-group">
+        <label for="grade">2. 나의 대략적인 성적 범위는?</label>
+        <select id="grade">
+            <option value="">-- 선택하세요 --</option>
+            <option value="high">상위권 (A등급 위주)</option>
+            <option value="mid">중위권 (B~C등급 위주)</option>
+            <option value="low">하위권 (자유로운 탐구 지향)</option>
+        </select>
+    </div>
+
+    <button onclick="recommendDepartment()">추천 학과 보기</button>
+
+    <!-- 결과 출력 영역 -->
+    <div id="result" class="result-box">
+        <div class="result-title">✨ 추천 결과:</div>
+        <p id="recommendation-text"></p>
+    </div>
+</div>
+
+<script>
+    function recommendDepartment() {
+        const interest = document.getElementById('interest').value;
+        const grade = document.getElementById('grade').value;
+        const resultBox = document.getElementById('result');
+        const resultText = document.getElementById('recommendation-text');
+
+        // 필수 입력 체크
+        if (!interest || !grade) {
+            alert("관심사와 성적을 모두 선택해 주세요!");
+            return;
+        }
+
+        let department = "";
+        let tip = "";
+
+        // 추천 로직 (관심사 및 성적 기준 조합)
+        if (interest === "tech") {
+            if (grade === "high") {
+                department = "컴퓨터공학과, AI데이터공학과";
+                tip = "높은 논리력이 필요해요. 수학과 알고리즘 공부를 병행하면 좋아요!";
+            } else if (grade === "mid") {
+                department = "소프트웨어학과, 정보통신공학과";
+                tip = "기초 코딩 역량을 쌓고 실무 프로젝트를 경험해 보는 것을 추천해요.";
+            } else {
+                department = "게임콘텐츠학과, 웹디자인과";
+                tip = "이론보다는 직접 결과물을 만들어보는 실무 중심의 공부가 잘 맞을 수 있어요.";
+            }
+        } 
+        else if (interest === "science") {
+            if (grade === "high") {
+                department = "의예과, 약학과, 생명공학과";
+                tip = "학습량이 많으므로 꾸준한 엉덩이 힘과 탐구 능력이 필수입니다.";
+            } else if (grade === "mid") {
+                department = "임상병리학과, 화학공학과";
+                tip = "실험과 분석에 강점이 있다면 아주 흥미로운 분야가 될 거예요.";
+            } else {
+                department = "보건행정과, 환경보건과";
+                tip = "과학적 관심사를 실생활이나 행정 업무에 접목하는 방향이 좋습니다.";
+            }
+        } 
+        else if (interest === "art") {
+            // 예체능은 성적보다 실기/포트폴리오 비중이 크다는 점을 반영
+            if (grade === "high") {
+                department = "시각디자인학과, 미디어커뮤니케이션학과";
+                tip = "기획력과 연출력을 모두 갖춘 융합형 인재로 성장하기 좋습니다.";
+            } else {
+                department = "영상편집학과, 실용음악과, 애니메이션학과";
+                tip = "성적보다는 자신만의 독창적인 포트폴리오와 실기 실력을 쌓는 데 집중해 보세요!";
+            }
+        } 
+        else if (interest === "social") {
+            if (grade === "high") {
+                department = "심리학과, 정치외교학과, 교육학과";
+                tip = "사람과 사회에 대한 깊은 통찰과 읽기/쓰기 능력이 많이 요구됩니다.";
+            } else if (grade === "mid") {
+                department = "사회복지학과, 상담심리학과";
+                tip = "타인을 공감하고 소통하는 능력이 성적보다 더 빛을 발하는 분야입니다.";
+            } else {
+                department = "유아교육과, 청소년지도학과";
+                tip = "현장에서 아이들이나 청소년들과 직접 소통하는 활동적인 성향에 잘 맞습니다.";
+            }
+        } 
+        else if (interest === "business") {
+            if (grade === "high") {
+                department = "경영학과, 경제학과, 통계학과";
+                tip = "수리적 감각과 데이터 분석 능력을 키우면 시장에서 강력한 무기가 됩니다.";
+            } else if (grade === "mid") {
+                department = "무역학과, 마케팅학과";
+                tip = "트렌드를 읽는 눈과 외국어 능력을 틈틈이 키워두면 유리합니다.";
+            } else {
+                department = "창업경영과, 유통물류과";
+                tip = "이론 위주 공부보다 실물 경제 흐름을 익히고 모의 창업 등을 경험해 보세요.";
+            }
+        }
+
+        // 결과 화면에 반영하기
+        resultText.innerHTML = `학생에게는 <strong>[${department}]</strong>을(를) 추천합니다.<br><br>💡 <strong>조언:</strong> ${tip}`;
+        resultBox.style.display = "block";
+    }
+</script>
+
+</body>
+</html>
